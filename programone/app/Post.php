@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
+    public $directory = '/images/';
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'title',
-        'content'
+        'content',
+        'path'
     ];
     
 
@@ -24,5 +26,12 @@ class Post extends Model
     }
     public function tags(){
         return $this->morphToMany('App\Tag', 'taggable');
+    }
+    public static function scopeLatest($query){
+        return $query->orderBy('id','asc')->get();
+    }
+
+    public function getPathAttribute($value){
+        return $this->directory . $value;
     }
 }

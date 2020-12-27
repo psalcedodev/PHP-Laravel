@@ -8,6 +8,7 @@ use App\Photo;
 use App\Tag;
 use App\Video;
 use App\Taggable;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,12 +31,48 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::resource('/posts', 'PostController');
+
+Route::group(['middleware' => 'web'], function () {
+
+    Route::resource('/posts', 'PostController');
+
+    
+
+});
 
 Route::get('/dates', function () {
     
+    $date = new DateTime('+1 week');
+    echo $date->format('m-d-Y');
+    echo '<br>';
+
+    echo Carbon::now()->addDays(10)->diffForHumans();
+    echo '<br>';
+    echo Carbon::now()->subMonth(5)->diffForHumans();
+    echo '<br>';
+    echo Carbon::now()->yesterday()->diffForHumans();
+    echo '<br>';
+
+    echo '<br>';
+    echo '<br>';
 
     
+});
+
+Route::get('/getname', function () {
+    
+    $user = User::findOrFail(1);
+    echo $user->name;
+
+});
+
+
+Route::get('/setname', function () {
+    
+    $user = User::findOrFail(1);
+    $user->name = "paolo";
+    $user->save();
+
 });
 
 // /*

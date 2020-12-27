@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Request\CreatePostRequest;
 use App\Post;
+use App\Http\Requests;
+use App\Http\Requests\CreatePostRequest as RequestsCreatePostRequest;
 
 class PostController extends Controller
 {
@@ -14,7 +17,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        // $posts = Post::latest()->get();
+        // $posts = Post::orderBy('id', 'asc')->get();
+        $posts = Post::latest()->get();
         return view('posts.index', compact('posts'));
     }
 
@@ -34,12 +39,30 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RequestsCreatePostRequest $request)
     {
         // return $request->get('title');
-        Post::create($request->all());
-        return redirect('/posts');
 
+        // Post::create($request->all());
+        // return redirect('/posts');
+
+        // $file = $request->file('file');
+        // echo"<br>";
+        // echo $file->getClientOriginalName();
+        // echo"<br>";
+        // echo $file->getSize();
+
+
+        $input = $request->all();
+        if($file = $request->file('file')){
+            $name = $file->getClientOriginalName();
+            $file->move('images', $name);
+            $input['path'] = $name;
+
+
+        };
+        Post::create($input);
+        return redirect('/posts');
     }
 
     /**
